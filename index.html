@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control de Personal — Finca La Tala</title>
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Control Personal">
+<meta name="mobile-web-app-capable" content="yes">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<style>
+  :root{
+    --azul-marino: #163a5f;
+    --azul-oscuro: #0e2843;
+    --azul-cielo: #eaf3fb;
+    --azul-medio: #2f6fa8;
+    --azul-suave: #cfe4f5;
+    --coral: #ff6b4a;
+    --coral-oscuro: #e0512f;
+    --ambar: #ffb703;
+    --gris-texto: #2c3b4a;
+    --gris-borde: #b8d4ea;
+    --blanco: #ffffff;
+    --rojo-aviso: #d63b3b;
+    --sombra: 0 2px 10px rgba(14,40,67,0.14);
+  }
+  *{ box-sizing: border-box; }
+  body{
+    margin:0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--gris-texto);
+    background-color: var(--azul-cielo);
+    padding-bottom: 60px;
+  }
+  header{
+    background: linear-gradient(160deg, var(--azul-oscuro) 0%, var(--azul-marino) 45%, var(--azul-medio) 100%);
+    color: var(--azul-cielo);
+    padding: 16px 16px 14px;
+    text-align: center;
+    position: sticky; top:0; z-index: 50;
+    box-shadow: 0 3px 14px rgba(20,15,8,0.3);
+    border-bottom: 3px solid var(--ambar);
+  }
+  header h1{ margin:0; font-size: 1.3rem; }
+  header .sub{ font-size:0.8rem; opacity:0.85; margin-top:2px; }
+
+  .contenedor{ max-width: 900px; margin: 0 auto; padding: 14px; }
+
+  .tarjeta{
+    background: var(--blanco);
+    border: 1px solid var(--gris-borde);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 14px;
+    box-shadow: var(--sombra);
+  }
+
+  .resumen-general{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px,1fr));
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .resumen-caja{
+    background: var(--blanco);
+    border-radius: 12px;
+    border: 1px solid var(--gris-borde);
+    padding: 12px;
+    text-align:center;
+    box-shadow: var(--sombra);
+  }
+  .resumen-caja .valor{ font-size:1.4rem; font-weight:700; color: var(--azul-marino); }
+  .resumen-caja .label{ font-size:0.72rem; color: var(--gris-texto); opacity:0.8; text-transform:uppercase; letter-spacing:0.03em; }
+
+  h2{ margin:0 0 10px; font-size:1.05rem; color: var(--azul-marino); }
+
+  label{ display:block; font-size:0.85rem; font-weight:700; margin-bottom:5px; color: var(--azul-marino); }
+  input[type=date], input[type=number], input[type=text]{
+    width:100%; padding:13px; border-radius:9px; border:2px solid var(--gris-borde);
+    font-size:1.15rem; background:var(--blanco); color:var(--azul-oscuro); font-weight:600;
+  }
+  input:focus{ outline:3px solid var(--coral); outline-offset:1px; border-color: var(--coral); }
+
+  .config-precio{
+    display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-bottom:6px;
+  }
+  .config-precio > div{ flex:1; min-width:130px; }
+
+  .fila-empleados{
+    display:grid;
+    grid-template-columns: 100px 100px 1fr 44px;
+    gap:10px;
+    align-items:end;
+    margin-bottom:12px;
+    padding:10px 10px 12px;
+    border-radius:10px;
+    background: var(--azul-cielo);
+    border: 2px solid var(--azul-suave);
+    border-left: 6px solid var(--azul-medio);
+  }
+  .fila-empleados.retraso{ border-left-color: var(--ambar); background: #fff8e8; }
+  .btn-quitar-fila{
+    background: var(--rojo-aviso); color:#fff; border:none; border-radius:9px;
+    height:48px; font-size:1.2rem; cursor:pointer; font-weight:700;
+  }
+
+  .btn{
+    border:none; border-radius:10px; padding:13px 18px; font-size:1.02rem;
+    font-weight:700; cursor:pointer; transition: filter .15s, transform .1s;
+  }
+  .btn:hover{ filter:brightness(1.06); }
+  .btn:active{ transform: scale(0.98); }
+  .btn-secundario{ background: var(--azul-suave); color: var(--azul-marino); }
+  .btn-guardar{ background: var(--coral); color:#fff; width:100%; margin-top:8px; padding:16px; font-size:1.15rem; box-shadow: 0 3px 10px rgba(255,107,74,0.4); }
+  .btn-imprimir{ background: var(--ambar); color: var(--azul-oscuro); }
+  .btn-cancelar{ background: transparent; color: var(--rojo-aviso); border:2px solid var(--rojo-aviso); }
+
+  .acciones-form{ display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
+
+  .jornada{
+    background:var(--blanco); border:1px solid var(--gris-borde); border-radius:12px;
+    margin-bottom:10px; box-shadow: var(--sombra); overflow:hidden;
+  }
+  .jornada-cabecera{
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+    padding:12px 14px; cursor:pointer; background: var(--azul-suave);
+  }
+  .jornada-fecha{ font-weight:700; color: var(--azul-marino); font-size:0.98rem; text-transform:capitalize; }
+  .jornada-mini{ font-size:0.8rem; color: var(--gris-texto); opacity:0.85; }
+  .jornada-totales{ display:flex; gap:14px; font-size:0.85rem; text-align:right; }
+  .jornada-totales b{ display:block; color:var(--azul-marino); font-size:1rem; }
+  .jornada-cuerpo{ padding:12px 14px; display:none; }
+  .jornada-cuerpo.abierto{ display:block; }
+  table.detalle{ width:100%; border-collapse:collapse; font-size:0.88rem; margin-bottom:8px; }
+  table.detalle th, table.detalle td{ text-align:left; padding:6px 6px; border-bottom:1px solid var(--gris-borde); }
+  table.detalle th{ color:var(--azul-marino); font-size:0.75rem; text-transform:uppercase; }
+  .jornada-acciones{ display:flex; gap:8px; margin-top:8px; }
+  .jornada-acciones .btn{ padding:8px 12px; font-size:0.82rem; }
+
+  .vacio{ text-align:center; padding:30px 10px; color:var(--gris-texto); opacity:0.7; }
+
+  .tabla-impresion{ display:none; }
+
+  @media print{
+    header, .tarjeta.form-entrada, .jornada-cabecera, .no-imprimir{ display:none !important; }
+    .jornada-cuerpo{ display:none !important; }
+    body{ background:#fff; padding:0; }
+    .tabla-impresion{
+      display:block !important;
+      width:100%; border-collapse: collapse; font-size:12px;
+    }
+    .tabla-impresion th, .tabla-impresion td{ border:1px solid #999; padding:5px 7px; text-align:left; }
+    .tabla-impresion th{ background:#eee; }
+    .tabla-impresion tfoot td{ font-weight:700; background:#f4f4f4; }
+    h1.titulo-impresion{ display:block !important; text-align:center; color:#222; }
+  }
+  h1.titulo-impresion{ display:none; }
+
+  @media (max-width:560px){
+    .fila-empleados{ grid-template-columns: 70px 70px 1fr 36px; }
+    .jornada-totales{ font-size:0.78rem; gap:10px; }
+  }
+
+  .aviso-flotante{
+    position: fixed; left:50%; bottom:22px; transform: translateX(-50%) translateY(20px);
+    background: var(--azul-marino); color:#fff; padding:12px 18px; border-radius:10px;
+    font-size:0.9rem; box-shadow: 0 4px 16px rgba(0,0,0,0.25); z-index: 200;
+    opacity:0; pointer-events:none; transition: opacity .25s, transform .25s; max-width:90%; text-align:center;
+  }
+  .aviso-flotante.visible{ opacity:1; transform: translateX(-50%) translateY(0); }
+  .aviso-flotante.error{ background: var(--rojo-aviso); }
+
+  .modal-overlay{
+    display:none; position: fixed; inset:0; background: rgba(20,15,8,0.5);
+    z-index: 300; align-items:center; justify-content:center; padding:20px;
+  }
+  .modal-overlay.visible{ display:flex; }
+  .modal-caja{
+    background:#fff; border-radius:12px; padding:20px; max-width:340px; width:100%;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3); text-align:center;
+  }
+  .modal-caja p{ margin:0 0 16px; color: var(--gris-texto); }
+  .modal-botones{ display:flex; gap:10px; justify-content:center; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>👷 Control de Personal — Finca La Tala</h1>
+  <div class="sub" id="cabeceraSub">Registro de jornadas de cuadrilla</div>
+  <div class="sub" id="estadoConexion" style="margin-top:4px; font-weight:700;">🔄 Conectando…</div>
+</header>
+
+<div class="contenedor">
+
+  <h1 class="titulo-impresion">Resumen de Personal — Finca La Tala</h1>
+
+  <div class="resumen-general no-imprimir">
+    <div class="resumen-caja">
+      <div class="valor" id="resDias">0</div>
+      <div class="label">Días registrados</div>
+    </div>
+    <div class="resumen-caja">
+      <div class="valor" id="resHoras">0</div>
+      <div class="label">Horas·persona</div>
+    </div>
+    <div class="resumen-caja">
+      <div class="valor" id="resCoste">0 €</div>
+      <div class="label">Coste total</div>
+    </div>
+    <div class="resumen-caja">
+      <div class="valor" id="resPrecioMostrado">0 €</div>
+      <div class="label">Precio / hora actual</div>
+    </div>
+  </div>
+
+  <div class="tarjeta no-imprimir">
+    <h2>⚙️ Configuración</h2>
+    <div class="config-precio">
+      <div>
+        <label for="precioHora">Precio por hora (€)</label>
+        <input type="number" id="precioHora" step="0.01" min="0" value="11.50">
+      </div>
+      <div>
+        <label for="horasCompletas">Horas de jornada completa (por defecto)</label>
+        <input type="number" id="horasCompletas" step="0.5" min="0" value="7">
+      </div>
+      <div style="flex:0;">
+        <button class="btn btn-secundario" onclick="guardarConfig()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tarjeta form-entrada">
+    <h2 id="tituloForm">📋 Añadir jornada</h2>
+    <label for="fechaJornada">Fecha</label>
+    <input type="date" id="fechaJornada">
+
+    <div id="filasEmpleados"></div>
+
+    <button class="btn btn-secundario" type="button" onclick="anadirFila()">➕ Añadir fila (retraso / grupo distinto)</button>
+
+    <div class="acciones-form">
+      <button class="btn btn-guardar" onclick="guardarJornada()">💾 Guardar jornada</button>
+      <button class="btn btn-cancelar" id="btnCancelarEdicion" style="display:none;" onclick="cancelarEdicion()">Cancelar edición</button>
+    </div>
+  </div>
+
+  <div class="tarjeta no-imprimir" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+    <h2 style="margin:0;">📅 Jornadas registradas</h2>
+    <button class="btn btn-imprimir" onclick="window.print()">🖨️ Imprimir resumen</button>
+    <button class="btn btn-secundario" onclick="descargarCopiaCSV()">⬇️ Copia de seguridad (Excel)</button>
+    <button class="btn btn-secundario" onclick="actualizarManual()">🔄 Actualizar</button>
+  </div>
+
+  <div id="listaJornadas"></div>
+
+  <table class="tabla-impresion">
+    <thead>
+      <tr><th>Fecha</th><th>Nº personas</th><th>Horas·persona</th><th>Coste (€)</th><th>Observaciones</th></tr>
+    </thead>
+    <tbody id="tablaImpresionCuerpo"></tbody>
+    <tfoot id="tablaImpresionPie"></tfoot>
+  </table>
+
+  <div class="no-imprimir" style="text-align:center; font-size:0.72rem; color:var(--azul-marino); opacity:0.55; margin-top:18px;">
+    Control de Personal · versión 1.6 · 02/07/2026 17:30
+  </div>
+
+</div>
+
+<div class="aviso-flotante no-imprimir" id="avisoFlotante"></div>
+
+<div class="modal-overlay no-imprimir" id="modalOverlay">
+  <div class="modal-caja">
+    <p id="modalMensaje"></p>
+    <div class="modal-botones">
+      <button class="btn btn-cancelar" onclick="modalCancelar()">Cancelar</button>
+      <button class="btn btn-guardar" style="width:auto;" onclick="modalConfirmar()">Sí, eliminar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = 'personal_jornadas_v1';
+  const CONFIG_KEY = 'personal_config_v1';
+  const FIREBASE_CONFIG = {
+    databaseURL: 'https://la-tala-albaranes-default-rtdb.europe-west1.firebasedatabase.app'
+  };
+
+  let firebaseDB = null, firebaseSincronizando = false;
+  let editandoFecha = null; // fecha original que se está editando (null = nueva)
+  let jornadasAbiertas = {};
+
+  // ===== Aviso flotante y modal de confirmación (en vez de alert/confirm nativos) =====
+  let avisoTimeout = null;
+  function mostrarAviso(msg, tipo){
+    const el = document.getElementById('avisoFlotante');
+    el.textContent = msg;
+    el.className = 'aviso-flotante no-imprimir visible' + (tipo === 'error' ? ' error' : '');
+    clearTimeout(avisoTimeout);
+    avisoTimeout = setTimeout(() => { el.classList.remove('visible'); }, 3200);
+  }
+
+  let confirmCallbackPendiente = null;
+  function pedirConfirmacion(msg, onConfirmar){
+    document.getElementById('modalMensaje').textContent = msg;
+    document.getElementById('modalOverlay').classList.add('visible');
+    confirmCallbackPendiente = onConfirmar;
+  }
+  function modalConfirmar(){
+    const cb = confirmCallbackPendiente;
+    document.getElementById('modalOverlay').classList.remove('visible');
+    confirmCallbackPendiente = null;
+    if(cb) cb();
+  }
+  function modalCancelar(){
+    document.getElementById('modalOverlay').classList.remove('visible');
+    confirmCallbackPendiente = null;
+  }
+
+  // ===== Utilidades =====
+  function hoyISO(){
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,'0');
+    const dia = String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${dia}`;
+  }
+
+  function formatearFechaBonita(iso){
+    const d = new Date(iso + 'T00:00:00');
+    return d.toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  }
+
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+  function cargarDatos(){
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  }
+  function guardarDatosLocal(lista){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
+  }
+  function cargarConfig(){
+    const raw = localStorage.getItem(CONFIG_KEY);
+    return raw ? JSON.parse(raw) : { precioHora: 11.50, horasCompletas: 7 };
+  }
+  function guardarConfigLocal(cfg){
+    localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
+  }
+
+  // ===== Firebase =====
+  let primeraCargaPersonal = true;
+
+  function inicializarFirebase(){
+    try{
+      firebase.initializeApp(FIREBASE_CONFIG);
+      firebaseDB = firebase.database();
+
+      firebaseDB.ref('personal').on('value', (snap) => {
+        if(firebaseSincronizando) return;
+        const datos = snap.val();
+        const hayDatosEnNube = Array.isArray(datos) && datos.length > 0;
+
+        if(primeraCargaPersonal){
+          primeraCargaPersonal = false;
+          const local = cargarDatos();
+          if(!hayDatosEnNube && local.length > 0){
+            // La nube está vacía pero este dispositivo tiene jornadas guardadas que aún no había subido: las subimos en vez de borrarlas.
+            subirDatosAFirebase(local);
+            return;
+          }
+        }
+
+        // Firebase guarda "null" cuando la lista queda vacía (no un array []),
+        // así que a partir de aquí tratamos null como "sin jornadas" para que el borrado total también sincronice.
+        guardarDatosLocal(hayDatosEnNube ? datos : []);
+        render();
+      });
+
+      firebaseDB.ref('personal_config').on('value', (snap) => {
+        if(firebaseSincronizando) return;
+        const cfg = snap.val();
+        if(cfg && typeof cfg === 'object'){
+          guardarConfigLocal(cfg);
+          aplicarConfigAFormulario();
+          render();
+        }
+      });
+
+      // Estado de conexión EN TIEMPO REAL (no solo al arrancar)
+      let yaConectadoAlgunaVez = false;
+      firebaseDB.ref('.info/connected').on('value', (snap) => {
+        const estado = document.getElementById('estadoConexion');
+        if(!estado) return;
+        if(snap.val() === true){
+          yaConectadoAlgunaVez = true;
+          estado.textContent = '☁️ Sincronizado con la nube';
+          estado.style.color = '';
+        } else {
+          estado.textContent = '📵 Sin conexión — guardando solo en este dispositivo';
+          estado.style.color = '#ffd7c9';
+        }
+      });
+      // Si tarda mucho en conectar (poca cobertura en el campo), avisamos de que los datos se guardan igual
+      setTimeout(() => {
+        if(!yaConectadoAlgunaVez){
+          const estado = document.getElementById('estadoConexion');
+          if(estado) estado.textContent = '🔄 Buscando señal… tus datos se guardan en este dispositivo mientras tanto';
+        }
+      }, 6000);
+
+      console.log('✅ Firebase inicializado — Control de Personal');
+    }catch(e){
+      console.warn('⚠️ Firebase no disponible (modo offline):', e.message);
+      const estado = document.getElementById('estadoConexion');
+      if(estado) estado.textContent = '📵 Sin conexión con la nube (guardando solo en este dispositivo)';
+    }
+  }
+
+  function subirDatosAFirebase(lista){
+    if(!firebaseDB) return;
+    firebaseSincronizando = true;
+    firebaseDB.ref('personal').set(lista).finally(() => { firebaseSincronizando = false; });
+  }
+  function subirConfigAFirebase(cfg){
+    if(!firebaseDB) return;
+    firebaseSincronizando = true;
+    firebaseDB.ref('personal_config').set(cfg).finally(() => { firebaseSincronizando = false; });
+  }
+
+  // ===== Config =====
+  function aplicarConfigAFormulario(){
+    const cfg = cargarConfig();
+    document.getElementById('precioHora').value = cfg.precioHora;
+    document.getElementById('horasCompletas').value = cfg.horasCompletas;
+  }
+  function guardarConfig(){
+    const cfg = {
+      precioHora: parseFloat(document.getElementById('precioHora').value) || 0,
+      horasCompletas: parseFloat(document.getElementById('horasCompletas').value) || 0
+    };
+    guardarConfigLocal(cfg);
+    subirConfigAFirebase(cfg);
+    render();
+  }
+
+  // ===== Formulario de filas =====
+  function anadirFila(personas, horas, observaciones){
+    const cfg = cargarConfig();
+    const cont = document.getElementById('filasEmpleados');
+    const esPrimera = cont.children.length === 0;
+    const div = document.createElement('div');
+    div.className = 'fila-empleados' + (esPrimera ? '' : ' retraso');
+    div.innerHTML = `
+      <div>
+        <label>Nº personas</label>
+        <input type="number" class="f-personas" min="1" value="${personas ?? ''}">
+      </div>
+      <div>
+        <label>Horas</label>
+        <input type="number" class="f-horas" step="0.5" min="0" value="${horas ?? (esPrimera ? cfg.horasCompletas : '')}">
+      </div>
+      <div>
+        <label>Observaciones (motivo del retraso, etc.)</label>
+        <input type="text" class="f-obs" placeholder="${esPrimera ? 'Horario completo' : 'Ej: llegó 2h tarde por avería'}" value="${observaciones ? observaciones.replace(/"/g,'&quot;') : ''}">
+      </div>
+      <button type="button" class="btn-quitar-fila" onclick="this.closest('.fila-empleados').remove()">✕</button>
+    `;
+    cont.appendChild(div);
+  }
+
+  function limpiarFormulario(){
+    document.getElementById('filasEmpleados').innerHTML = '';
+    document.getElementById('fechaJornada').value = hoyISO();
+    anadirFila();
+    editandoFecha = null;
+    document.getElementById('tituloForm').textContent = '📋 Añadir jornada';
+    document.getElementById('btnCancelarEdicion').style.display = 'none';
+  }
+
+  function cancelarEdicion(){ limpiarFormulario(); }
+
+  function guardarJornada(){
+    const fecha = document.getElementById('fechaJornada').value;
+    if(!fecha){ mostrarAviso('Selecciona una fecha.', 'error'); return; }
+
+    const filasDom = document.querySelectorAll('#filasEmpleados .fila-empleados');
+    if(filasDom.length === 0){ mostrarAviso('Añade al menos una fila de personal.', 'error'); return; }
+
+    const filas = [];
+    for(const f of filasDom){
+      const personas = parseInt(f.querySelector('.f-personas').value);
+      const horas = parseFloat(f.querySelector('.f-horas').value);
+      const obs = f.querySelector('.f-obs').value.trim();
+      if(!personas || personas <= 0 || isNaN(horas) || horas < 0){
+        mostrarAviso('Revisa que todas las filas tengan nº de personas y horas válidas.', 'error');
+        return;
+      }
+      filas.push({ id: uid(), personas, horas, observaciones: obs });
+    }
+
+    let lista = cargarDatos();
+    let seFusiono = false;
+
+    if(editandoFecha){
+      // edición explícita: sustituye por completo la jornada que se estaba editando
+      lista = lista.filter(j => j.fecha !== editandoFecha);
+      lista.push({ fecha, filas });
+    } else {
+      const idx = lista.findIndex(j => j.fecha === fecha);
+      if(idx !== -1){
+        // ya existía una jornada ese día: añadimos las filas nuevas a las que había, no se pierde nada
+        lista[idx] = { fecha, filas: lista[idx].filas.concat(filas) };
+        seFusiono = true;
+      } else {
+        lista.push({ fecha, filas });
+      }
+    }
+
+    lista.sort((a,b) => a.fecha < b.fecha ? 1 : -1);
+
+    guardarDatosLocal(lista);
+    subirDatosAFirebase(lista);
+
+    limpiarFormulario();
+    render();
+    mostrarAviso(seFusiono ? 'Filas añadidas a la jornada existente ✅' : 'Jornada guardada ✅');
+  }
+
+  function editarJornada(fecha){
+    const lista = cargarDatos();
+    const jornada = lista.find(j => j.fecha === fecha);
+    if(!jornada) return;
+
+    editandoFecha = fecha;
+    document.getElementById('fechaJornada').value = fecha;
+    document.getElementById('filasEmpleados').innerHTML = '';
+    jornada.filas.forEach(f => anadirFila(f.personas, f.horas, f.observaciones));
+    document.getElementById('tituloForm').textContent = '✏️ Editando jornada';
+    document.getElementById('btnCancelarEdicion').style.display = 'inline-block';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function eliminarJornada(fecha){
+    pedirConfirmacion('¿Eliminar toda la jornada de ' + formatearFechaBonita(fecha) + '?', () => {
+      let lista = cargarDatos().filter(j => j.fecha !== fecha);
+      guardarDatosLocal(lista);
+      subirDatosAFirebase(lista);
+      render();
+      mostrarAviso('Jornada eliminada.');
+    });
+  }
+
+  // ===== Cálculos =====
+  function totalesJornada(jornada){
+    let personas = 0, horasPersona = 0;
+    jornada.filas.forEach(f => { personas += f.personas; horasPersona += f.personas * f.horas; });
+    const cfg = cargarConfig();
+    const coste = horasPersona * cfg.precioHora;
+    return { personas, horasPersona, coste };
+  }
+
+  function toggleJornada(fecha){
+    jornadasAbiertas[fecha] = !jornadasAbiertas[fecha];
+    render();
+  }
+
+  // ===== Render =====
+  function render(){
+    const cfg = cargarConfig();
+    const lista = cargarDatos().slice().sort((a,b) => a.fecha < b.fecha ? 1 : -1);
+
+    document.getElementById('resPrecioMostrado').textContent = cfg.precioHora.toFixed(2) + ' €';
+
+    let totalHoras = 0, totalCoste = 0;
+    lista.forEach(j => { const t = totalesJornada(j); totalHoras += t.horasPersona; totalCoste += t.coste; });
+
+    document.getElementById('resDias').textContent = lista.length;
+    document.getElementById('resHoras').textContent = totalHoras.toLocaleString('es-ES');
+    document.getElementById('resCoste').textContent = totalCoste.toLocaleString('es-ES', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
+
+    const cont = document.getElementById('listaJornadas');
+    if(lista.length === 0){
+      cont.innerHTML = '<div class="vacio">Aún no hay jornadas registradas. Añade la primera arriba.</div>';
+    } else {
+      cont.innerHTML = lista.map(j => {
+        const t = totalesJornada(j);
+        const abierta = !!jornadasAbiertas[j.fecha];
+        const filasHtml = j.filas.map(f => `
+          <tr>
+            <td>${f.personas}</td>
+            <td>${f.horas} h</td>
+            <td>${(f.personas*f.horas).toLocaleString('es-ES')} h</td>
+            <td>${f.observaciones ? f.observaciones : '—'}</td>
+          </tr>
+        `).join('');
+        return `
+          <div class="jornada">
+            <div class="jornada-cabecera" onclick="toggleJornada('${j.fecha}')">
+              <div>
+                <div class="jornada-fecha">${formatearFechaBonita(j.fecha)}</div>
+                <div class="jornada-mini">${j.filas.length} fila${j.filas.length>1?'s':''} · toca para ${abierta?'ocultar':'ver'} detalle</div>
+              </div>
+              <div class="jornada-totales">
+                <div>${t.personas}<br><span style="opacity:.7;">personas</span></div>
+                <div><b>${t.horasPersona.toLocaleString('es-ES')} h</b>horas·persona</div>
+                <div><b>${t.coste.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})} €</b>coste</div>
+              </div>
+            </div>
+            <div class="jornada-cuerpo ${abierta?'abierto':''}">
+              <table class="detalle">
+                <thead><tr><th>Personas</th><th>Horas</th><th>Horas·persona</th><th>Observaciones</th></tr></thead>
+                <tbody>${filasHtml}</tbody>
+              </table>
+              <div class="jornada-acciones no-imprimir">
+                <button class="btn btn-secundario" onclick="editarJornada('${j.fecha}')">✏️ Editar</button>
+                <button class="btn btn-cancelar" onclick="eliminarJornada('${j.fecha}')">🗑️ Eliminar</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Tabla de impresión
+    const cuerpoImp = document.getElementById('tablaImpresionCuerpo');
+    cuerpoImp.innerHTML = lista.map(j => {
+      const t = totalesJornada(j);
+      const obs = j.filas.filter(f=>f.observaciones).map(f => `${f.personas}p: ${f.observaciones}`).join(' · ');
+      return `<tr>
+        <td>${formatearFechaBonita(j.fecha)}</td>
+        <td>${t.personas}</td>
+        <td>${t.horasPersona.toLocaleString('es-ES')}</td>
+        <td>${t.coste.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+        <td>${obs || '—'}</td>
+      </tr>`;
+    }).join('');
+    document.getElementById('tablaImpresionPie').innerHTML = `
+      <tr><td>TOTAL (${lista.length} días)</td><td></td>
+        <td>${totalHoras.toLocaleString('es-ES')}</td>
+        <td>${totalCoste.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+        <td></td></tr>
+    `;
+  }
+
+  // ===== Actualización manual =====
+  function actualizarManual(){
+    if(!firebaseDB){
+      mostrarAviso('Sin conexión con la nube ahora mismo. Mostrando los datos guardados en este dispositivo.', 'error');
+      render();
+      return;
+    }
+    if(firebaseSincronizando){
+      mostrarAviso('Terminando de guardar, prueba de nuevo en un segundo.');
+      return;
+    }
+    Promise.all([
+      firebaseDB.ref('personal').once('value'),
+      firebaseDB.ref('personal_config').once('value')
+    ]).then(([snapDatos, snapCfg]) => {
+      const datos = snapDatos.val();
+      guardarDatosLocal(Array.isArray(datos) ? datos : []);
+      const cfg = snapCfg.val();
+      if(cfg && typeof cfg === 'object'){ guardarConfigLocal(cfg); aplicarConfigAFormulario(); }
+      render();
+    }).catch(e => {
+      console.warn('No se pudo actualizar desde la nube:', e.message);
+      mostrarAviso('No se ha podido conectar con la nube. Mostrando los últimos datos guardados en este dispositivo.', 'error');
+    });
+  }
+
+  // ===== Copia de seguridad =====
+  function descargarCopiaCSV(){
+    const cfg = cargarConfig();
+    const lista = cargarDatos().slice().sort((a,b) => a.fecha < b.fecha ? 1 : -1);
+    let filas = [['Fecha','Nº personas (fila)','Horas (fila)','Horas·persona (fila)','Observaciones','Coste día (€)','Horas·persona día','Personas día']];
+
+    lista.forEach(j => {
+      const t = totalesJornada(j);
+      j.filas.forEach((f, idx) => {
+        filas.push([
+          formatearFechaBonita(j.fecha),
+          f.personas,
+          f.horas,
+          (f.personas*f.horas),
+          f.observaciones || '',
+          idx === 0 ? t.coste.toFixed(2) : '',
+          idx === 0 ? t.horasPersona : '',
+          idx === 0 ? t.personas : ''
+        ]);
+      });
+    });
+
+    let totalHoras = 0, totalCoste = 0;
+    lista.forEach(j => { const t = totalesJornada(j); totalHoras += t.horasPersona; totalCoste += t.coste; });
+    filas.push([]);
+    filas.push(['TOTAL', '', '', '', '', totalCoste.toFixed(2), totalHoras, '']);
+    filas.push([]);
+    filas.push(['Precio/hora aplicado (€)', cfg.precioHora]);
+
+    const csv = filas.map(fila => fila.map(v => {
+      const s = String(v ?? '');
+      return /[",;\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s;
+    }).join(';')).join('\n');
+
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'control_personal_' + hoyISO() + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ===== Inicio =====
+  window.addEventListener('DOMContentLoaded', () => {
+    aplicarConfigAFormulario();
+    limpiarFormulario();
+    render();
+    inicializarFirebase();
+  });
+</script>
+</body>
+</html>
