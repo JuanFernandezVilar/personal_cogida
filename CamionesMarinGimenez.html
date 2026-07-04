@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Camiones Marín Giménez</title>
+<style>
+  :root{
+    --verde-hoja: #3d5a3d;
+    --verde-oscuro: #25381f;
+    --crema: #f7f3ea;
+    --naranja-fruta: #d4683a;
+    --naranja-suave: #f0d9c8;
+    --gris-texto: #4a463f;
+    --gris-borde: #d9d2c2;
+    --blanco: #ffffff;
+    --rojo-aviso: #b3432f;
+    --sombra: 0 2px 8px rgba(37,56,31,0.12);
+    --tierra-oscura: #4a3526;
+    --dorado-tarde: #d9a441;
+  }
+  *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body{
+    margin:0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--gris-texto);
+    background-color: var(--crema);
+    padding-bottom: 40px;
+    min-height: 100vh;
+  }
+  header{
+    background: linear-gradient(160deg, var(--tierra-oscura) 0%, var(--verde-oscuro) 45%, var(--verde-hoja) 100%);
+    color: var(--crema);
+    padding: 18px 16px 16px;
+    text-align: center;
+    box-shadow: 0 3px 14px rgba(20,15,8,0.3);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 3px solid var(--dorado-tarde);
+  }
+  header h1{
+    margin:0;
+    font-size: 1.3rem;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  header p{
+    margin: 4px 0 0;
+    font-size: 0.78rem;
+    color: var(--naranja-suave);
+  }
+  main{
+    max-width: 480px;
+    margin: 16px auto;
+    padding: 0 14px;
+  }
+  .tarjeta{
+    background: var(--blanco);
+    border: 1px solid var(--gris-borde);
+    border-radius: 12px;
+    box-shadow: var(--sombra);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .tarjeta h2, .tarjeta h3{
+    margin: 0 0 12px;
+    color: var(--verde-oscuro);
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  label{
+    display:block;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--verde-oscuro);
+    margin: 12px 0 5px;
+  }
+  input[type="date"], select, input[type="number"]{
+    width: 100%;
+    padding: 12px 10px;
+    font-size: 1rem;
+    border: 1px solid var(--gris-borde);
+    border-radius: 8px;
+    background: var(--crema);
+    color: var(--gris-texto);
+  }
+  .fila-doble{
+    display:flex;
+    gap: 10px;
+  }
+  .fila-doble > div{ flex:1; }
+  button{
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    border-radius: 9px;
+    font-weight: 700;
+  }
+  .guardar{
+    width:100%;
+    background: var(--naranja-fruta);
+    color: var(--blanco);
+    padding: 14px;
+    font-size: 1.02rem;
+    margin-top: 18px;
+  }
+  .descargar{
+    width:100%;
+    background: var(--verde-hoja);
+    color: var(--blanco);
+    padding: 13px;
+    font-size: 0.95rem;
+  }
+  .borrar-todo{
+    width:100%;
+    background: transparent;
+    color: var(--rojo-aviso);
+    border: 1px solid var(--rojo-aviso);
+    padding: 10px;
+    font-size: 0.85rem;
+    margin-top: 8px;
+  }
+  .aviso-ok{
+    display:none;
+    background: #e4efe0;
+    color: var(--verde-oscuro);
+    border: 1px solid var(--verde-hoja);
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 0.85rem;
+    margin-top: 12px;
+    text-align:center;
+  }
+  .lista-titulo{
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+  }
+  .contador-badge{
+    background: var(--naranja-fruta);
+    color: var(--blanco);
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+  .camion-item{
+    border: 1px solid var(--gris-borde);
+    border-radius: 9px;
+    padding: 10px 12px;
+    margin-top: 10px;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  .camion-info{ font-size: 0.85rem; line-height:1.4; }
+  .camion-info .titular{ font-weight:700; color: var(--verde-oscuro); }
+  .camion-info .detalle{ color: var(--gris-texto); }
+  .btn-borrar{
+    background: none;
+    color: var(--rojo-aviso);
+    font-size: 1.1rem;
+    padding: 6px 8px;
+    flex-shrink:0;
+  }
+  .vacio{
+    text-align:center;
+    color: #9a9284;
+    font-size: 0.85rem;
+    padding: 10px 0;
+  }
+  .nota{
+    font-size: 0.76rem;
+    color: #7a7365;
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🚚 Camiones Marín Giménez</h1>
+  <p>Registro rápido desde el campo</p>
+</header>
+
+<main>
+
+  <div class="tarjeta">
+    <h2>Nuevo camión</h2>
+
+    <label for="fecha">Día de cogida</label>
+    <input type="date" id="fecha">
+
+    <label for="titular">Titular</label>
+    <select id="titular">
+      <option value="Juan Fernández Vilar">Juan Fernández Vilar</option>
+      <option value="Juan Fernández Martínez">Juan Fernández Martínez</option>
+      <option value="Heliodora Vilar Ramírez">Heliodora Vilar Ramírez</option>
+    </select>
+
+    <label for="sector">Sector</label>
+    <select id="sector">
+      <option value="S1">S1</option>
+      <option value="S2">S2</option>
+      <option value="S3">S3</option>
+      <option value="S4">S4</option>
+      <option value="S5">S5</option>
+      <option value="S6">S6</option>
+      <option value="Abajo">Abajo</option>
+    </select>
+
+    <div class="fila-doble">
+      <div>
+        <label for="palotsPrimera">Palots de primera</label>
+        <input type="number" id="palotsPrimera" min="0" placeholder="0" inputmode="numeric">
+      </div>
+      <div>
+        <label for="palotsSegunda">Palots de segunda</label>
+        <input type="number" id="palotsSegunda" min="0" placeholder="0" inputmode="numeric">
+      </div>
+    </div>
+
+    <button class="guardar" onclick="guardarCamion()">Guardar camión</button>
+    <p class="aviso-ok" id="okGuardar">✅ Camión guardado</p>
+  </div>
+
+  <div class="tarjeta">
+    <div class="lista-titulo">
+      <h3 style="margin:0;">📋 Camiones sin pasar al ordenador</h3>
+      <span class="contador-badge" id="contador">0</span>
+    </div>
+    <div id="lista"></div>
+    <p class="nota">Estos camiones se quedan guardados en este móvil hasta que descargues el archivo y lo importes en el programa del ordenador.</p>
+  </div>
+
+  <div class="tarjeta">
+    <button class="descargar" onclick="descargarDatos()">📥 Descargar datos para el ordenador</button>
+    <button class="borrar-todo" onclick="borrarTodo()">🗑️ Borrar todos los camiones de este móvil</button>
+    <p class="nota">Pulsa "Descargar", pasa el archivo .json al ordenador (por WhatsApp, correo, etc.) y súbelo en el programa de Cogida, en la pestaña Marín Giménez, donde pone "Importar camiones desde el móvil". Después, si quieres, borra los camiones de aquí.</p>
+  </div>
+
+</main>
+
+<script>
+  const STORAGE_KEY = 'camiones_marin_gimenez_v1';
+
+  function hoy(){
+    const d = new Date();
+    return d.toISOString().split('T')[0];
+  }
+
+  function cargarCamiones(){
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  }
+
+  function guardarCamiones(lista){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
+  }
+
+  function guardarCamion(){
+    const fecha = document.getElementById('fecha').value || hoy();
+    const titular = document.getElementById('titular').value;
+    const sector = document.getElementById('sector').value;
+    const palotsPrimera = Number(document.getElementById('palotsPrimera').value || 0);
+    const palotsSegunda = Number(document.getElementById('palotsSegunda').value || 0);
+
+    const lista = cargarCamiones();
+    lista.push({
+      id: Date.now(),
+      fecha, titular, sector, palotsPrimera, palotsSegunda
+    });
+    guardarCamiones(lista);
+
+    document.getElementById('palotsPrimera').value = '';
+    document.getElementById('palotsSegunda').value = '';
+
+    renderLista();
+
+    const aviso = document.getElementById('okGuardar');
+    aviso.style.display = 'block';
+    setTimeout(() => aviso.style.display = 'none', 1800);
+  }
+
+  function borrarCamion(id){
+    let lista = cargarCamiones();
+    lista = lista.filter(c => c.id !== id);
+    guardarCamiones(lista);
+    renderLista();
+  }
+
+  function borrarTodo(){
+    if(!confirm('¿Borrar todos los camiones guardados en este móvil? Asegúrate de haberlos descargado antes.')) return;
+    guardarCamiones([]);
+    renderLista();
+  }
+
+  function renderLista(){
+    const lista = cargarCamiones();
+    document.getElementById('contador').textContent = lista.length;
+    const cont = document.getElementById('lista');
+    if(lista.length === 0){
+      cont.innerHTML = '<p class="vacio">Todavía no has guardado ningún camión.</p>';
+      return;
+    }
+    const ordenada = [...lista].sort((a,b) => b.id - a.id);
+    cont.innerHTML = ordenada.map(c => `
+      <div class="camion-item">
+        <div class="camion-info">
+          <div class="titular">${c.titular}</div>
+          <div class="detalle">${formatearFecha(c.fecha)} · Sector ${c.sector} · 1ª: ${c.palotsPrimera} palots · 2ª: ${c.palotsSegunda} palots</div>
+        </div>
+        <button class="btn-borrar" onclick="borrarCamion(${c.id})">✕</button>
+      </div>
+    `).join('');
+  }
+
+  function formatearFecha(f){
+    const partes = (f || '').split('-');
+    if(partes.length !== 3) return f;
+    return partes[2] + '/' + partes[1] + '/' + partes[0];
+  }
+
+  function descargarDatos(){
+    const lista = cargarCamiones();
+    if(lista.length === 0){
+      alert('No hay camiones guardados todavía.');
+      return;
+    }
+    const datosParaExportar = lista.map(c => ({
+      fecha: c.fecha, titular: c.titular, sector: c.sector,
+      palotsPrimera: c.palotsPrimera, palotsSegunda: c.palotsSegunda
+    }));
+    const blob = new Blob([JSON.stringify(datosParaExportar, null, 2)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'camiones_marin_gimenez_' + hoy() + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  document.getElementById('fecha').value = hoy();
+  renderLista();
+</script>
+
+</body>
+</html>
