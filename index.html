@@ -145,6 +145,7 @@
   .tabla-impresion{ display:none; }
 
   @media print{
+    @page{ size: portrait; margin: 12mm; }
     header, .tarjeta.form-entrada, .jornada-cabecera, .no-imprimir{ display:none !important; }
     .jornada-cuerpo{ display:none !important; }
     body{ background:#fff; padding:0; }
@@ -155,6 +156,11 @@
     .tabla-impresion th, .tabla-impresion td{ border:1px solid #999; padding:5px 7px; text-align:left; }
     .tabla-impresion th{ background:#eee; }
     .tabla-impresion tfoot td{ font-weight:700; background:#f4f4f4; }
+    .tabla-impresion tr.fila-dia-imp td{ font-weight:700; background:#dbe6f0; border-top:2px solid #666; text-transform:capitalize; }
+    .tabla-impresion tr.fila-detalle-imp td{ font-size:11px; }
+    .tabla-impresion tr.fila-detalle-imp td:nth-child(5){ font-style:italic; color:#a33; }
+    .tabla-impresion tr.fila-detalle-imp td:first-child{ padding-left:18px; color:#888; }
+    .tabla-impresion tr.fila-total-dia-imp td{ font-weight:700; background:#f4f4f4; border-bottom:2px solid #666; }
     h1.titulo-impresion{ display:block !important; text-align:center; color:#222; }
   }
   h1.titulo-impresion{ display:none; }
@@ -252,15 +258,16 @@
   <div class="tarjeta no-imprimir" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
     <h2 style="margin:0;">📅 Jornadas registradas</h2>
     <button class="btn btn-imprimir" onclick="window.print()">🖨️ Imprimir resumen</button>
-    <button class="btn btn-secundario" onclick="descargarCopiaCSV()">⬇️ Copia de seguridad (Excel)</button>
+    <button class="btn btn-secundario" onclick="abrirPanelBackup()">🗂️ Copia de seguridad</button>
     <button class="btn btn-secundario" onclick="actualizarManual()">🔄 Actualizar</button>
+    <input type="file" id="inputImportarJSON" accept="application/json" style="display:none;" onchange="importarCopiaJSON(event)">
   </div>
 
   <div id="listaJornadas"></div>
 
   <table class="tabla-impresion">
     <thead>
-      <tr><th>Fecha</th><th>Nº personas</th><th>Horas·persona</th><th>Coste (€)</th><th>Observaciones</th></tr>
+      <tr><th>Fecha</th><th>Nº personas</th><th>Horas</th><th>Horas·persona</th><th>Observaciones</th><th>Coste (€)</th></tr>
     </thead>
     <tbody id="tablaImpresionCuerpo"></tbody>
     <tfoot id="tablaImpresionPie"></tfoot>
@@ -283,6 +290,31 @@
     </div>
   </div>
 </div>
+
+<div class="modal-overlay no-imprimir" id="panelBackupOverlay">
+  <div class="modal-caja" style="max-width:380px;">
+    <h2 style="margin-top:0; text-align:left;">🗂️ Copia de seguridad</h2>
+    <p style="text-align:left; font-size:0.85rem;">Guarda tus datos de vez en cuando para no perderlos, o recupéralos si algo falla.</p>
+    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:6px;">
+      <button class="btn btn-secundario" onclick="descargarCopiaCSV()">⬇️ Copia en Excel</button>
+      <button class="btn btn-secundario" onclick="descargarCopiaJSON()">📦 Copia de datos (JSON)</button>
+      <button class="btn btn-secundario" onclick="document.getElementById('inputImportarJSON').click()">📥 Restaurar copia (JSON)</button>
+      <button class="btn btn-secundario" onclick="descargarAppHTML()">💾 Descargar esta app (HTML)</button>
+    </div>
+    <div class="modal-botones" style="margin-top:10px;">
+      <button class="btn btn-cancelar" style="width:100%;" onclick="cerrarPanelBackup()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function abrirPanelBackup(){
+    document.getElementById('panelBackupOverlay').classList.add('visible');
+  }
+  function cerrarPanelBackup(){
+    document.getElementById('panelBackupOverlay').classList.remove('visible');
+  }
+</script>
 
 <script>
   const STORAGE_KEY = 'personal_jornadas_v1';
@@ -631,20 +663,38 @@
     const cuerpoImp = document.getElementById('tablaImpresionCuerpo');
     cuerpoImp.innerHTML = lista.map(j => {
       const t = totalesJornada(j);
-      const obs = j.filas.filter(f=>f.observaciones).map(f => `${f.personas}p: ${f.observaciones}`).join(' · ');
-      return `<tr>
-        <td>${formatearFechaBonita(j.fecha)}</td>
-        <td>${t.personas}</td>
-        <td>${t.horasPersona.toLocaleString('es-ES')}</td>
-        <td>${t.coste.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
-        <td>${obs || '—'}</td>
-      </tr>`;
+      const filasHtmlImp = j.filas.map(f => `
+        <tr class="fila-detalle-imp">
+          <td></td>
+          <td>${f.personas}</td>
+          <td>${f.horas}</td>
+          <td>${(f.personas*f.horas).toLocaleString('es-ES')}</td>
+          <td>${f.observaciones ? f.observaciones : '—'}</td>
+          <td></td>
+        </tr>
+      `).join('');
+      return `
+        <tr class="fila-dia-imp">
+          <td>${formatearFechaBonita(j.fecha)}</td>
+          <td colspan="5"></td>
+        </tr>
+        ${filasHtmlImp}
+        <tr class="fila-total-dia-imp">
+          <td>Total día</td>
+          <td>${t.personas}</td>
+          <td></td>
+          <td>${t.horasPersona.toLocaleString('es-ES')}</td>
+          <td></td>
+          <td>${t.coste.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})} €</td>
+        </tr>
+      `;
     }).join('');
     document.getElementById('tablaImpresionPie').innerHTML = `
       <tr><td>TOTAL (${lista.length} días)</td><td></td>
+        <td></td>
         <td>${totalHoras.toLocaleString('es-ES')}</td>
-        <td>${totalCoste.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
-        <td></td></tr>
+        <td></td>
+        <td>${totalCoste.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})} €</td></tr>
     `;
   }
 
@@ -715,6 +765,69 @@
     a.download = 'control_personal_' + hoyISO() + '.csv';
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  // ===== Copia de seguridad completa (JSON) - permite restaurar todo =====
+  function descargarCopiaJSON(){
+    const cfg = cargarConfig();
+    const lista = cargarDatos();
+    const copia = {
+      tipo: 'control_personal_finca_la_tala',
+      version: '1.7',
+      generado: new Date().toISOString(),
+      config: cfg,
+      jornadas: lista
+    };
+    const blob = new Blob([JSON.stringify(copia, null, 2)], { type: 'application/json;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'copia_control_personal_' + hoyISO() + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    mostrarAviso('Copia de datos descargada. Guárdala en un sitio seguro (Drive, email, etc.).');
+  }
+
+  function importarCopiaJSON(event){
+    const file = event.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try{
+        const copia = JSON.parse(e.target.result);
+        if(!copia || !Array.isArray(copia.jornadas)){
+          mostrarAviso('El archivo no tiene un formato de copia válido.', 'error');
+          return;
+        }
+        pedirConfirmacion(
+          `Esto reemplazará TODOS los datos actuales por los ${copia.jornadas.length} días guardados en la copia (generada el ${copia.generado ? new Date(copia.generado).toLocaleString('es-ES') : 'fecha desconocida'}). ¿Continuar?`,
+          () => {
+            guardarDatosLocal(copia.jornadas);
+            if(copia.config){ guardarConfigLocal(copia.config); aplicarConfigAFormulario(); }
+            if(firebaseDB){ subirDatosAFirebase(copia.jornadas); if(copia.config) subirConfigAFirebase(copia.config); }
+            render();
+            mostrarAviso('Copia restaurada correctamente.');
+          }
+        );
+      }catch(err){
+        mostrarAviso('No se ha podido leer el archivo: ' + err.message, 'error');
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  }
+
+  // ===== Descargar copia de la propia app en HTML =====
+  function descargarAppHTML(){
+    const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'control_personal_finca_la_tala_' + hoyISO() + '.html';
+    a.click();
+    URL.revokeObjectURL(url);
+    mostrarAviso('App descargada. Ábrela desde tu navegador siempre que quieras, aunque no tengas conexión con la web.');
   }
 
   // ===== Inicio =====
