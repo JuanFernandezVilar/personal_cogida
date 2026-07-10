@@ -1142,6 +1142,12 @@
     <select id="anioGlobal" onchange="cambiarAnioGlobal()"><option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option></select>
   </div>
   <button class="btn-descargar-fijo" onclick="descargarHTML()">💾 Guardar copia del archivo</button>
+  <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-top:6px; max-width:600px; margin-left:auto; margin-right:auto;">
+    <button class="btn-descargar-fijo" style="width:auto; flex:1; min-width:150px; background:var(--verde-hoja);" onclick="descargarCopiaJSON()">📦 Copia de datos (JSON)</button>
+    <button class="btn-descargar-fijo" style="width:auto; flex:1; min-width:150px; background:var(--verde-hoja);" onclick="document.getElementById('inputRestaurarJSON').click()">📥 Restaurar copia</button>
+    <input type="file" id="inputRestaurarJSON" accept="application/json" style="display:none;" onchange="importarCopiaJSON(event)">
+  </div>
+  <div id="avisoRecordatorioCopia" style="display:none; max-width:600px; margin:8px auto 0; background:#fff3cd; color:#7a5c00; border:1.5px solid #e0b400; border-radius:8px; padding:8px 12px; font-size:0.82rem; text-align:center; font-weight:700;"></div>
   <div id="kilosTotalesHeader" class="kilos-totales-header">
       <div class="kth-label">Kilos totales · Cogida 2026</div>
       <div class="kth-cifra">78.340 kg</div>
@@ -4135,6 +4141,67 @@
   }
 
   // ===== DESCARGAR COPIA DEL HTML CON LOS DATOS ACTUALES EMBEBIDOS =====
+  // ===== COPIA DE SEGURIDAD COMPLETA (JSON) - todos los años y toda la configuración =====
+  function descargarCopiaJSON(){
+    const copia = {
+      tipo: 'control_albaranes_finca_la_tala',
+      version: '1.0',
+      generado: new Date().toISOString(),
+      datos: {
+        albaranes_finca_v1: JSON.parse(localStorage.getItem('albaranes_finca_v1') || '[]'),
+        albaranes_equivalencias_v1: JSON.parse(localStorage.getItem('albaranes_equivalencias_v1') || 'null'),
+        albaranes_anios_manual_v1: JSON.parse(localStorage.getItem('albaranes_anios_manual_v1') || 'null'),
+        albaranes_anio_global_v1: localStorage.getItem('albaranes_anio_global_v1'),
+        albaranes_precios_factura_v1: JSON.parse(localStorage.getItem('albaranes_precios_factura_v1') || 'null'),
+        albaranes_precio_pitiso_factura_v1: JSON.parse(localStorage.getItem('albaranes_precio_pitiso_factura_v1') || 'null')
+      }
+    };
+    const blob = new Blob([JSON.stringify(copia, null, 2)], { type: 'application/json;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'copia_control_albaranes_' + hoy() + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    localStorage.setItem('albaranes_ultima_copia_v1', new Date().toISOString());
+    ocultarAvisoRecordatorioCopia();
+    alert('Copia de datos descargada. Guárdala en un sitio seguro (Drive, email, pendrive, etc.).');
+  }
+
+  function importarCopiaJSON(event){
+    const file = event.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try{
+        const copia = JSON.parse(e.target.result);
+        if(!copia || !copia.datos || !Array.isArray(copia.datos.albaranes_finca_v1)){
+          alert('El archivo no tiene un formato de copia válido.');
+          return;
+        }
+        const fechaCopia = copia.generado ? new Date(copia.generado).toLocaleString('es-ES') : 'fecha desconocida';
+        const ok = confirm(`Esto reemplazará TODOS los datos actuales (todos los años) por los guardados en esta copia (generada el ${fechaCopia}). Esta acción no se puede deshacer. ¿Continuar?`);
+        if(!ok) return;
+
+        Object.keys(copia.datos).forEach(clave => {
+          const valor = copia.datos[clave];
+          if(valor === null || valor === undefined) return;
+          if(clave === 'albaranes_finca_v1') return; // se guarda aparte con guardarDatos() para subir también a Firebase
+          localStorage.setItem(clave, typeof valor === 'string' ? valor : JSON.stringify(valor));
+        });
+
+        guardarDatos(copia.datos.albaranes_finca_v1); // guarda en local Y sube a Firebase
+
+        alert('Copia restaurada correctamente. La página se va a recargar.');
+        location.reload();
+      }catch(err){
+        alert('No se ha podido leer el archivo: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  }
+
   function descargarHTML(){
     const datosActuales = localStorage.getItem(STORAGE_KEY) || '[]';
     const htmlActual = document.documentElement.outerHTML;
@@ -4159,11 +4226,39 @@
     URL.revokeObjectURL(url);
   }
 
+  // ===== RECORDATORIO DE COPIA DE SEGURIDAD =====
+  function ocultarAvisoRecordatorioCopia(){
+    const el = document.getElementById('avisoRecordatorioCopia');
+    if(el) el.style.display = 'none';
+  }
+
+  function comprobarRecordatorioCopia(){
+    const el = document.getElementById('avisoRecordatorioCopia');
+    if(!el) return;
+    const DIAS_AVISO = 7;
+    const ultima = localStorage.getItem('albaranes_ultima_copia_v1');
+
+    if(!ultima){
+      el.textContent = '⚠️ Todavía no has hecho ninguna copia de seguridad. Pulsa "📦 Copia de datos (JSON)" para guardar tus datos.';
+      el.style.display = 'block';
+      return;
+    }
+
+    const dias = Math.floor((Date.now() - new Date(ultima).getTime()) / (1000*60*60*24));
+    if(dias >= DIAS_AVISO){
+      el.textContent = `⚠️ Hace ${dias} días que no haces una copia de seguridad. Pulsa "📦 Copia de datos (JSON)" para guardar tus datos.`;
+      el.style.display = 'block';
+    } else {
+      el.style.display = 'none';
+    }
+  }
+
   // ===== INICIALIZACIÓN AL CARGAR LA PÁGINA =====
   inicializarFirebase(); // conectar Firebase (en segundo plano, no bloquea si no hay internet)
   renderKilosTotalesHeader();
   renderSaldoEstrio(); renderPalotsAcumuladosA();
   renderListaProveedor('A');
+  comprobarRecordatorioCopia();
 </script>
 
 
