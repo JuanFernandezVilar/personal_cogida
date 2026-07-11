@@ -1175,6 +1175,7 @@
     <button class="tab-btn tab-analisis" data-tab="R" onclick="cambiarTab('R')">Resumen</button>
     <button class="tab-btn tab-analisis" data-tab="E" onclick="cambiarTab('E')">Evolución</button>
     <button class="tab-btn tab-analisis" data-tab="D" onclick="cambiarTab('D')">Dif. Pesos</button>
+    <button class="tab-btn tab-analisis" data-tab="S" onclick="cambiarTab('S')">🗺️ Sectores</button>
     <button class="tab-btn tab-gestion" data-tab="F" onclick="cambiarTab('F')">Facturas</button>
   </div>
 
@@ -1842,6 +1843,30 @@
 
   </div>
 
+  <!-- ===================== PANEL S: KILOS POR SECTOR (TODOS LOS PROVEEDORES) ===================== -->
+  <div class="panel" id="panel-S" style="display:none">
+
+    <div class="tarjeta">
+      <p style="font-size:0.8rem;color:#777;margin:0 0 10px;">Suma de kilos de todos los proveedores (Pitiso + Marín Giménez + Placeros) agrupados por sector. Compara el año seleccionado con otro año anterior en una gráfica de barras.</p>
+      <div style="display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end;">
+        <div>
+          <label for="sectorAnioA" style="display:block; font-size:0.78rem; color:#777; margin-bottom:4px;">Año a analizar</label>
+          <select id="sectorAnioA" onchange="renderTablaSectores()" style="padding:8px; border-radius:8px; border:1.5px solid var(--gris-borde); font-size:0.9rem;"></select>
+        </div>
+        <div>
+          <label for="sectorAnioB" style="display:block; font-size:0.78rem; color:#777; margin-bottom:4px;">Comparar con</label>
+          <select id="sectorAnioB" onchange="renderTablaSectores()" style="padding:8px; border-radius:8px; border:1.5px solid var(--gris-borde); font-size:0.9rem;">
+            <option value="">— Ninguno —</option>
+          </select>
+        </div>
+        <button class="guardar" style="margin:0; background:var(--verde-hoja);" onclick="imprimirTablaSectores()">🖨️ Imprimir</button>
+      </div>
+    </div>
+
+    <div id="tablaSectoresVariedades"></div>
+
+  </div>
+
   <!-- ===================== PANEL M: MÓVIL — MARÍN GIMÉNEZ ===================== -->
   <div class="panel" id="panel-M" style="display:none">
     <div id="vistaMovilMarin"></div>
@@ -1958,6 +1983,7 @@
     if(tab === 'F'){ inicializarFacturas(); }
     if(tab === 'E'){ inicializarEvolucionComparativa(); }
     if(tab === 'D'){ renderDiferenciaPesos(); }
+    if(tab === 'S'){ inicializarPanelSectores(); }
     if(tab === 'M'){ renderVistaMovilMarin(); }
   }
 
@@ -3196,6 +3222,162 @@
         </tfoot>
       </table>
       <p style="font-size:0.75rem;color:#999;">Los kilos de Pitiso y Placeros son estimados (según las equivalencias de arriba). Los de Marín Giménez son kilos reales (1ª + 2ª).</p>`;
+  }
+
+  // ======================================================================
+  // PANEL S: KILOS POR SECTOR (TODOS LOS PROVEEDORES) — GRÁFICA COMPARATIVA ENTRE AÑOS
+  // ======================================================================
+
+  function inicializarPanelSectores(){
+    const selA = document.getElementById('sectorAnioA');
+    const selB = document.getElementById('sectorAnioB');
+    const anios = obtenerAniosDisponibles();
+    const anioActual = String(new Date().getFullYear());
+
+    const prevA = selA.value;
+    selA.innerHTML = anios.map(a => `<option value="${a}">${a}</option>`).join('');
+    selA.value = anios.includes(prevA) ? prevA : (anios.includes(anioActual) ? anioActual : anios[anios.length - 1]);
+
+    const prevB = selB.value;
+    selB.innerHTML = ['<option value="">— Ninguno —</option>'].concat(anios.map(a => `<option value="${a}">${a}</option>`)).join('');
+    const anioAnteriorDefault = String(Number(selA.value) - 1);
+    selB.value = anios.includes(prevB) ? prevB : (anios.includes(anioAnteriorDefault) ? anioAnteriorDefault : '');
+
+    renderTablaSectores();
+  }
+
+  // Suma kilos (de los 3 proveedores) agrupados por sector, para un año concreto
+  function calcularKilosPorSector(anio, eq){
+    let lista = cargarDatos();
+    if(anio){ lista = lista.filter(r => r.fecha && r.fecha.slice(0,4) === anio); }
+    const resultado = {};
+    lista.forEach(r => {
+      if(!r.sector) return;
+      let kg = 0;
+      if(r.tipo === 'A') kg = Number(r.palotsSuyos || 0) * eq.kgPalotPitiso;
+      else if(r.tipo === 'B') kg = Number(r.kilosPrimera || 0) + Number(r.kilosSegunda || 0);
+      else if(r.tipo === 'C') kg = Number(r.cajas || 0) * eq.kgCajaPlacero;
+      resultado[r.sector] = (resultado[r.sector] || 0) + kg;
+    });
+    return resultado;
+  }
+
+  function renderTablaSectores(){
+    const selA = document.getElementById('sectorAnioA');
+    const selB = document.getElementById('sectorAnioB');
+    if(!selA) return;
+    const anioA = selA.value;
+    const anioB = selB.value;
+    const eq = cargarEquivalencias();
+    const contenedor = document.getElementById('tablaSectoresVariedades');
+
+    const datosA = calcularKilosPorSector(anioA, eq);
+    const datosB = anioB ? calcularKilosPorSector(anioB, eq) : null;
+
+    const sectoresOrden = ['S1','S2','S3','S4','S5','S6','Abajo'];
+    const sectoresPresentes = sectoresOrden.filter(s => datosA[s] || (datosB && datosB[s]));
+
+    if(sectoresPresentes.length === 0){
+      contenedor.innerHTML = `<p class="vacio">No hay datos registrados en ${anioA}.</p>`;
+      return;
+    }
+
+    const valoresA = sectoresPresentes.map(s => datosA[s] || 0);
+    const valoresB = sectoresPresentes.map(s => (datosB && datosB[s]) || 0);
+    const totGenA = valoresA.reduce((a,b)=>a+b,0);
+    const totGenB = valoresB.reduce((a,b)=>a+b,0);
+
+    const colorA = 'var(--verde-hoja)';
+    const colorB = '#c98a4b';
+
+    const grafico = datosB
+      ? dibujarGraficoBarrasDobles(sectoresPresentes, valoresA, valoresB, colorA, colorB)
+      : dibujarGraficoBarras(sectoresPresentes, valoresA, colorA);
+
+    const leyenda = datosB
+      ? `<div style="display:flex; gap:18px; margin:10px 0 4px; font-size:0.82rem;">
+           <span><span style="display:inline-block;width:12px;height:12px;background:${colorA};border-radius:3px;margin-right:6px;"></span>${anioA} (${totGenA.toFixed(0)} kg)</span>
+           <span><span style="display:inline-block;width:12px;height:12px;background:${colorB};border-radius:3px;margin-right:6px;"></span>${anioB} (${totGenB.toFixed(0)} kg)</span>
+         </div>`
+      : `<div style="font-size:0.82rem;margin:10px 0 4px;"><span style="display:inline-block;width:12px;height:12px;background:${colorA};border-radius:3px;margin-right:6px;"></span>${anioA} (${totGenA.toFixed(0)} kg)</div>`;
+
+    // Filas resumen por sector, con diferencia si hay año de comparación
+    const filasResumen = sectoresPresentes.map((sec, i) => {
+      const kgA = valoresA[i], kgB = valoresB[i];
+      let colDif = '';
+      if(datosB){
+        const dif = kgA - kgB;
+        const pct = kgB > 0 ? (dif / kgB * 100) : (kgA > 0 ? 100 : 0);
+        const signo = dif > 0 ? '+' : '';
+        const color = dif > 0 ? '#2f7a3d' : (dif < 0 ? '#b23a3a' : '#777');
+        colDif = `<td>${kgB.toFixed(0)} kg</td><td style="color:${color};">${signo}${dif.toFixed(0)} kg (${signo}${pct.toFixed(1)}%)</td>`;
+      }
+      return `<tr><td><strong>${sec}</strong></td><td>${kgA.toFixed(0)} kg</td>${colDif}</tr>`;
+    }).join('');
+
+    let colDifTotal = '';
+    if(datosB){
+      const dif = totGenA - totGenB;
+      const pct = totGenB > 0 ? (dif / totGenB * 100) : (totGenA > 0 ? 100 : 0);
+      const signo = dif > 0 ? '+' : '';
+      colDifTotal = `<td>${totGenB.toFixed(0)} kg</td><td>${signo}${dif.toFixed(0)} kg (${signo}${pct.toFixed(1)}%)</td>`;
+    }
+
+    const cabeceraB = datosB ? `<th>Total ${anioB}</th><th>Diferencia</th>` : '';
+
+    contenedor.innerHTML = `
+      <div class="tarjeta" id="graficoSectoresContenido">
+        <h3 style="margin-top:0;">Kilos por sector — ${datosB ? anioA + ' vs ' + anioB : anioA}</h3>
+        ${leyenda}
+        ${grafico}
+        <table class="tabla-sector" style="margin-top:18px;">
+          <thead><tr><th>Sector</th><th>Total ${anioA}</th>${cabeceraB}</tr></thead>
+          <tbody>${filasResumen}</tbody>
+          <tfoot>
+            <tr style="border-top:2px solid var(--verde-hoja);">
+              <td><strong>TOTAL GENERAL</strong></td>
+              <td><strong>${totGenA.toFixed(0)} kg</strong></td>
+              ${colDifTotal}
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <p style="font-size:0.75rem;color:#999;">Suma de kilos de Pitiso + Marín Giménez + Placeros. Los kilos de Pitiso y Placeros son estimados según las equivalencias configuradas en Resumen → Por sector.</p>`;
+  }
+
+  function imprimirTablaSectores(){
+    const anioA = document.getElementById('sectorAnioA').value;
+    const anioB = document.getElementById('sectorAnioB').value;
+    const bloque = document.getElementById('graficoSectoresContenido');
+    if(!bloque){
+      alert('No hay datos para imprimir.');
+      return;
+    }
+    const titulo = anioB ? `Kilos por sector — ${anioA} vs ${anioB}` : `Kilos por sector — ${anioA}`;
+    const ventana = window.open('', '_blank');
+    ventana.document.write(`
+      <!DOCTYPE html>
+      <html lang="es"><head><meta charset="UTF-8"><title>${titulo}</title>
+      <style>
+        :root{ --verde-hoja:#4a7c3f; }
+        body{ font-family: Arial, sans-serif; padding: 24px; color:#25381f; }
+        h1{ font-size: 1.3rem; border-bottom: 2px solid #d4683a; padding-bottom: 8px; }
+        h3{ font-size: 1rem; }
+        table{ width:100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 14px; }
+        th, td{ border: 1px solid #ccc; padding: 6px 8px; text-align: left; }
+        th{ background: #f0d9c8; }
+        tfoot td{ background: #f7f3ea; font-weight: bold; }
+        .barra-valor-label, .barra-mes-label{ font-size: 11px; fill:#25381f; text-anchor:middle; }
+        @media print{ button{ display:none; } }
+      </style></head>
+      <body>
+        <h1>🍊 ${titulo}</h1>
+        <p>Generado el ${hoy()}. Kilos de todos los proveedores (Pitiso, Marín Giménez y Placeros) sumados por sector.</p>
+        ${bloque.outerHTML}
+        <button onclick="window.print()" style="margin-top:18px;padding:10px 18px;">🖨️ Imprimir</button>
+      </body></html>
+    `);
+    ventana.document.close();
   }
 
   // ----- Evolución por años (no depende del año seleccionado, los muestra todos) -----
